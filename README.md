@@ -21,6 +21,6 @@ Currently, building has only been tested on Linux.
 5. The generated OS image is in raw binary form as `bin/os_image.bin`. There is currently no pre-defined way in the makefile of writing this image to a CD, flashdrive, or converting it to any other format such as an ISO.
 
 #### Credits
-I created/was inspired by the resources found in these links:
+I was helped/inspired by the resources found in these links:
 - https://www.youtube.com/watch?v=YvZhgRO7hL4&index=11&list=WL
 - http://wiki.osdev.org/Main_Page
