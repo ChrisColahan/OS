@@ -1,6 +1,6 @@
 
 
-#def VIDEO_MEMORY_LOCATION 0xB8000
+#define VIDEO_MEMORY_LOCATION 0xB8000
 
 void main();
 void print();

@@ -15,10 +15,13 @@ mov al, 9 				;read 9 sectors
 mov bx, kernel_entry 	;read them into our kernel jump point (0x7E00)
 call read_from_disk
 
+;enable A20 line for input if not already enabled
+jmp check_a20
+
 ;switch to 32-bit protected mode
 call switch_to_pm
 
-jmp kill ;Hang if anything gets here
+jmp kill ;Hang if anything gets here (switch fails)
 
 ;include utility functions
 %include "src/functions.asm"

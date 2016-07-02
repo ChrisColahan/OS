@@ -15,6 +15,11 @@ mov al, 9 				;read 9 sectors
 mov bx, kernel_entry 	;read them into our kernel jump point (0x7E00)
 call read_from_disk
 
+;enable A20 line for input if not already enabled
+in al, 0x92
+or al, 2
+out 0x92, al
+
 ;switch to 32-bit protected mode
 call switch_to_pm
 

@@ -26,6 +26,8 @@ void print(char* text) {
 	while(*p_next_char) {
 		*p_video_mem = *p_next_char;
 		p_next_char ++;
-		p_video_mem += 2;
+		p_video_mem ++;
+		*p_video_mem = 5;
+		p_video_mem ++;
 	}
 }

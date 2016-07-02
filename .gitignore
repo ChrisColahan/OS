@@ -1,2 +1,4 @@
 #generated files
 bin/*
+#editor files
+*~

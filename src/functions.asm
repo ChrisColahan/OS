@@ -1,5 +1,5 @@
 ;
-; 16-bit FUNCTIONS
+; 16-BIT REAL MODE UTILITY FUNCTIONS
 ;
 
 ;infinite loop
@@ -53,6 +53,7 @@ read_from_disk:
   jc print_string ;display the disk error message if an error occurred
 
   ret
+
 ;
 ; ERROR MESSAGES
 ;
