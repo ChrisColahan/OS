@@ -28,7 +28,41 @@ void main();
 int print(char* text, int offset, char attr);
 void kill();
 char makeAttr(char fg, char bg);
+void clear(char bg);
+static inline void outb(unsigned short port, unsigned char val);
+static inline unsigned char inb(unsigned short port);
+//unsigned char getScancode();
 
+static inline void outb(unsigned short port, unsigned char val) {
+    asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) );
+}
+
+static inline unsigned char inb(unsigned short port) {
+    unsigned char ret;
+    asm volatile ("inb $1, %0" : "=a"(ret) : "Nd"(port));
+    return ret;
+}
+/*
+unsigned char getScancode() {
+    //do {
+        //how I think it should be done
+        //unsigned char c = inb(0x60);
+        //if(c != 0) {
+        //    return c;
+        //}
+    //what the internet said
+    unsigned char c = 0;
+    do {
+        if(inb(0x60) != c) {
+            c = inb(0x60);
+            if(c > 0)
+                return c;
+        }
+    } while(1);
+        
+    //} while (1); //just wait for keyboard input forever
+}
+*/
 void entry() {
 	main();
 }
@@ -38,7 +72,8 @@ char makeAttr(char fgcolor, char bgcolor) {
 }
 
 void main() {
-	int offset = print("Hello from the C kernel!", 0, makeAttr(COLOR_CYAN, COLOR_RED));
+	clear(COLOR_MAGENTA);
+    int offset = print("Hello from the C kernel!", 0, makeAttr(COLOR_CYAN, COLOR_RED));
 	offset = print("Some more text, but using fancy offsets so the first text isn't written over!", offset, makeAttr(COLOR_LIGHT_GREEN, COLOR_BLUE));
     offset = print("Some more text\nbut with\nline\nbreaks!", offset, makeAttr(COLOR_RED,COLOR_BLUE));
     kill();
@@ -54,12 +89,16 @@ int print(char* text, int offset, char attr) {
 
 	while(*p_next_char) {
         if(*p_next_char == '\n') {
-            //go one line down
-            p_video_mem += 2*(VIDEO_MEMORY_COLUMNS);
+            unsigned int currOffset = (int)p_video_mem - VIDEO_MEMORY_LOCATION;
+            
             //go to beginning of line
-            p_video_mem -= (((int)p_video_mem % 160));
-            p_video_mem += 64;
-            //to to next char
+            currOffset -= currOffset % (2*VIDEO_MEMORY_COLUMNS);
+            //go down a line
+            currOffset += 2*VIDEO_MEMORY_COLUMNS;
+            //set location pointer
+            p_video_mem = (char*)(VIDEO_MEMORY_LOCATION + currOffset);
+
+            //go to next char
             p_next_char ++;
         }
         else {
@@ -72,4 +111,18 @@ int print(char* text, int offset, char attr) {
 	}
 
     return (int)p_video_mem - VIDEO_MEMORY_LOCATION - 2;
+}
+
+void clear(char bg) {
+    bg = makeAttr(bg, bg);
+    char* p_video_mem = (char*) VIDEO_MEMORY_LOCATION;
+    unsigned int offset = 0;
+    
+    while(offset < 80*25*2) {
+        *p_video_mem = ' ';
+        *p_video_mem = bg;
+        p_video_mem ++;
+        offset ++;
+    }
+
 }
