@@ -29,9 +29,13 @@ int print(char* text, int offset, char attr);
 void kill();
 char makeAttr(char fg, char bg);
 void clear(char bg);
+unsigned char getScancode();
 static inline void outb(unsigned short port, unsigned char val);
 static inline unsigned char inb(unsigned short port);
-//unsigned char getScancode();
+
+void entry() {
+    main();
+}
 
 static inline void outb(unsigned short port, unsigned char val) {
     asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) );
@@ -42,29 +46,17 @@ static inline unsigned char inb(unsigned short port) {
     asm volatile ("inb $1, %0" : "=a"(ret) : "Nd"(port));
     return ret;
 }
-/*
+
 unsigned char getScancode() {
-    //do {
-        //how I think it should be done
-        //unsigned char c = inb(0x60);
-        //if(c != 0) {
-        //    return c;
-        //}
-    //what the internet said
-    unsigned char c = 0;
+    char c=0;
     do {
-        if(inb(0x60) != c) {
-            c = inb(0x60);
-            if(c > 0)
+        if(inb(0x60)!=c)
+        {
+            c=inb(0x60);
+            if(c>0)
                 return c;
         }
     } while(1);
-        
-    //} while (1); //just wait for keyboard input forever
-}
-*/
-void entry() {
-	main();
 }
 
 char makeAttr(char fgcolor, char bgcolor) {
