@@ -9,14 +9,10 @@ void entry() {
 
 //do normal C things
 
+#include "util.h"
 #include "math.h"
 #include "graphics.h"
 
-int print(char* text, int offset, char attr);
-char* itoa(unsigned int i);
-void kill();
-char makeAttr(char fg, char bg);
-void clear(char bg);
 unsigned char getScancode();
 static inline void outb(unsigned short port, unsigned char val);
 static inline unsigned char inb(unsigned short port);
@@ -43,56 +39,24 @@ unsigned char getScancode() {
     } while(1);
 }
 
-char* itos(unsigned int num) {
-    char res[30]; // long enough for largest number
-    unsigned int i, counter = 0;
-	char* buf = &res[0];
-    
-	if (num == 0) {
-        buf[counter++] = '0';
-    }
-
-    for ( ; num; num /= 10) {
-        buf[counter++] = "0123456789"[num%10];
-    }
-    
-    buf[counter] = '\0';
-
-    for(i = 0; i < counter / 2; i ++) {
-        char tmp = buf[i];
-        buf[i] = buf[counter - i - 1];
-        buf[counter - i - 1] = tmp;
-    }
-
-    return buf;
-}
-
-char makeAttr(char fgcolor, char bgcolor) {
-    return (bgcolor<<4) | fgcolor;
-}
-
 void main() {
-    unsigned char scancode = 0;
+    //unsigned char scancode = 0;
     //while(1) {
       //  if(scancode == 0)
 	   //     scancode = getScancode();
         
-        clear(COLOR_MAGENTA);
-        int offset = print("Hello from the C kernel!", 0, makeAttr(COLOR_CYAN, COLOR_RED));
-	    offset = print("Some more text, but using fancy offsets so the first text isn't written over!", offset, makeAttr(COLOR_LIGHT_GREEN, COLOR_BLUE));
-        offset = print("Some more text\nbut with\nline\nbreaks!", offset, makeAttr(COLOR_RED,COLOR_BLUE));
-        offset = print("key press:", offset, makeAttr(COLOR_WHITE, COLOR_BLACK));
-        offset = print(itos(scancode), offset, makeAttr(COLOR_WHITE, COLOR_BLACK));
+        clear(ATTR_COLOR_MAGENTA);
+        int offset = print("Hello from the C kernel!", 0, makeAttr(ATTR_COLOR_CYAN, ATTR_COLOR_RED));
+	    offset = print("Some more text, but using fancy offsets so the first text isn't written over!", offset, makeAttr(ATTR_COLOR_LIGHT_GREEN, ATTR_COLOR_BLUE));
+        offset = print("Some more text\nbut with\nline\nbreaks!", offset, makeAttr(ATTR_COLOR_RED, ATTR_COLOR_BLUE));
+        offset = print("key press:", offset, makeAttr(ATTR_COLOR_WHITE, ATTR_COLOR_BLACK));
+        offset = print(itos(12345678), offset, makeAttr(ATTR_COLOR_WHITE, ATTR_COLOR_BLACK));
     //}
     // just in case
     kill();
 }
 
-void kill() {
-	while(1) {}
-}
-
-int print(char* text, int offset, char attr) {
+int print(char* text, unsigned int offset, char attr) {
 	char* p_video_mem = (char*) VIDEO_MEMORY_LOCATION + offset;
 	char* p_next_char = text;
 
@@ -122,6 +86,10 @@ int print(char* text, int offset, char attr) {
     return (int)p_video_mem - VIDEO_MEMORY_LOCATION - 2;
 }
 
+char makeAttr(char fgcolor, char bgcolor) {
+    return (bgcolor<<4) | fgcolor;
+}
+
 void clear(char bg) {
     bg = makeAttr(bg, bg);
     char* p_video_mem = (char*) VIDEO_MEMORY_LOCATION;
@@ -133,5 +101,6 @@ void clear(char bg) {
         p_video_mem ++;
         offset ++;
     }
-
 }
+
+
