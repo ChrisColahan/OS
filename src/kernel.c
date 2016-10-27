@@ -1,41 +1,25 @@
 
-
-#define VIDEO_MEMORY_LOCATION 0xB8000
-
-#define VIDEO_MEMORY_COLUMNS 80
-#define VIDEO_MEMORY_LINES   25
-
-#define COLOR_BLACK 0
-#define COLOR_BLUE 1
-#define COLOR_GREEN 2
-#define COLOR_CYAN 3
-#define COLOR_RED 4
-#define COLOR_MAGENTA 5
-#define COLOR_BROWN 6
-#define COLOR_LIGHT_GRAY 7
-#define COLOR_DARK_GREY 8
-#define COLOR_LIGHT_BLUE 9
-#define COLOR_LIGHT_GREEN 10
-#define COLOR_LIGHT_CYAN 11
-#define COLOR_LIGHT_RED 12
-#define COLOR_LIGHT_MAGENTA 13
-#define COLOR_LIGHT_BROWN 14
-#define COLOR_WHITE 15
-
-#define NEWLINE_CHAR 10
-
+//this needs to be here!
 void main();
+
+//boostrap kernel
+void entry() {
+    main();
+}
+
+//do normal C things
+
+#include "math.h"
+#include "graphics.h"
+
 int print(char* text, int offset, char attr);
+char* itoa(unsigned int i);
 void kill();
 char makeAttr(char fg, char bg);
 void clear(char bg);
 unsigned char getScancode();
 static inline void outb(unsigned short port, unsigned char val);
 static inline unsigned char inb(unsigned short port);
-
-void entry() {
-    main();
-}
 
 static inline void outb(unsigned short port, unsigned char val) {
     asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) );
@@ -59,15 +43,48 @@ unsigned char getScancode() {
     } while(1);
 }
 
+char* itos(unsigned int num) {
+    char res[30]; // long enough for largest number
+    unsigned int i, counter = 0;
+	char* buf = &res[0];
+    
+	if (num == 0) {
+        buf[counter++] = '0';
+    }
+
+    for ( ; num; num /= 10) {
+        buf[counter++] = "0123456789"[num%10];
+    }
+    
+    buf[counter] = '\0';
+
+    for(i = 0; i < counter / 2; i ++) {
+        char tmp = buf[i];
+        buf[i] = buf[counter - i - 1];
+        buf[counter - i - 1] = tmp;
+    }
+
+    return buf;
+}
+
 char makeAttr(char fgcolor, char bgcolor) {
     return (bgcolor<<4) | fgcolor;
 }
 
 void main() {
-	clear(COLOR_MAGENTA);
-    int offset = print("Hello from the C kernel!", 0, makeAttr(COLOR_CYAN, COLOR_RED));
-	offset = print("Some more text, but using fancy offsets so the first text isn't written over!", offset, makeAttr(COLOR_LIGHT_GREEN, COLOR_BLUE));
-    offset = print("Some more text\nbut with\nline\nbreaks!", offset, makeAttr(COLOR_RED,COLOR_BLUE));
+    unsigned char scancode = 0;
+    //while(1) {
+      //  if(scancode == 0)
+	   //     scancode = getScancode();
+        
+        clear(COLOR_MAGENTA);
+        int offset = print("Hello from the C kernel!", 0, makeAttr(COLOR_CYAN, COLOR_RED));
+	    offset = print("Some more text, but using fancy offsets so the first text isn't written over!", offset, makeAttr(COLOR_LIGHT_GREEN, COLOR_BLUE));
+        offset = print("Some more text\nbut with\nline\nbreaks!", offset, makeAttr(COLOR_RED,COLOR_BLUE));
+        offset = print("key press:", offset, makeAttr(COLOR_WHITE, COLOR_BLACK));
+        offset = print(itos(scancode), offset, makeAttr(COLOR_WHITE, COLOR_BLACK));
+    //}
+    // just in case
     kill();
 }
 
