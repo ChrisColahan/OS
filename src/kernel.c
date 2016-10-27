@@ -9,35 +9,11 @@ void entry() {
 
 //do normal C things
 
+#include "io.h"
 #include "util.h"
 #include "math.h"
 #include "graphics.h"
 
-unsigned char getScancode();
-static inline void outb(unsigned short port, unsigned char val);
-static inline unsigned char inb(unsigned short port);
-
-static inline void outb(unsigned short port, unsigned char val) {
-    asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) );
-}
-
-static inline unsigned char inb(unsigned short port) {
-    unsigned char ret;
-    asm volatile ("inb $1, %0" : "=a"(ret) : "Nd"(port));
-    return ret;
-}
-
-unsigned char getScancode() {
-    char c=0;
-    do {
-        if(inb(0x60)!=c)
-        {
-            c=inb(0x60);
-            if(c>0)
-                return c;
-        }
-    } while(1);
-}
 
 void main() {
     //unsigned char scancode = 0;
@@ -101,6 +77,28 @@ void clear(char bg) {
         p_video_mem ++;
         offset ++;
     }
+}
+
+inline void outb(unsigned short port, unsigned char val) {
+    asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) );
+}
+
+inline unsigned char inb(unsigned short port) {
+    unsigned char ret;
+    asm volatile ("inb $1, %0" : "=a"(ret) : "Nd"(port));
+    return ret;
+}
+
+unsigned char getScancode() {
+    char c=0;
+    do {
+        if(inb(0x60)!=c)
+        {
+            c=inb(0x60);
+            if(c>0)
+                return c;
+        }
+    } while(1);
 }
 
 
