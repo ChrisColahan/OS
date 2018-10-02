@@ -14,7 +14,7 @@ clean:
 assemble_bootloader:
 	nasm src/boot.asm -f bin -o bin/boot.bin
 
-compile_c_file = gcc -Wall -ffreestanding -c $(1) -o $(strip $(patsubst src%,bin%,$(patsubst %.c,%.o,$(1)))) -m32;
+compile_c_file = gcc -fno-pie -Wall -ffreestanding -c $(1) -o $(strip $(patsubst src%,bin%,$(patsubst %.c,%.o,$(1)))) -m32;
 
 compile_kernel:
 	#compile the C kernel
