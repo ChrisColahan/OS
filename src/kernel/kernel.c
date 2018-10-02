@@ -9,10 +9,10 @@ void entry() {
 
 //do normal C things
 
-#include "io.h"
-#include "util.h"
-#include "math.h"
-#include "graphics.h"
+#include "../io.h"
+#include "../util.h"
+#include "../math.h"
+#include "../graphics.h"
 
 
 void main() {
@@ -62,10 +62,6 @@ int print(char* text, unsigned int offset, char attr) {
     return (int)p_video_mem - VIDEO_MEMORY_LOCATION - 2;
 }
 
-char makeAttr(char fgcolor, char bgcolor) {
-    return (bgcolor<<4) | fgcolor;
-}
-
 void clear(char bg) {
     bg = makeAttr(bg, bg);
     char* p_video_mem = (char*) VIDEO_MEMORY_LOCATION;
@@ -79,6 +75,11 @@ void clear(char bg) {
     }
 }
 
+char makeAttr(char fgcolor, char bgcolor) {
+    return (bgcolor<<4) | fgcolor;
+}
+
+/*
 inline void outb(unsigned short port, unsigned char val) {
     asm volatile ( "outb %0, %1" : : "a"(val), "Nd"(port) );
 }
@@ -87,9 +88,9 @@ inline unsigned char inb(unsigned short port) {
     unsigned char ret;
     asm volatile ("inb $1, %0" : "=a"(ret) : "Nd"(port));
     return ret;
-}
+}*/
 
-unsigned char getScancode() {
+/*unsigned char getScancode() {
     char c=0;
     do {
         if(inb(0x60)!=c)
@@ -99,6 +100,6 @@ unsigned char getScancode() {
                 return c;
         }
     } while(1);
-}
+}*/
 
 
