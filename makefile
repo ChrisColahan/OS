@@ -3,13 +3,16 @@ SRC_DIR = src
 OUT_DIR = bin
 
 SRC_FILES = $(shell find $(SRC_DIR) -name '*.c')
+SRC_FILES := $(filter-out src/kernel/kernel.c, $(SRC_FILES))
 
 all: build run
 
 build: clean assemble_bootloader compile_kernel create_disk_image
 
 clean:
+	-mkdir bin
 	-rm bin/*
+	-rm bin/kernel/*
 
 assemble_bootloader:
 	nasm src/boot.asm -f bin -o bin/boot.bin
@@ -18,6 +21,7 @@ compile_c_file = gcc -fno-pie -Wall -ffreestanding -c $(1) -o $(strip $(patsubst
 
 compile_kernel:
 	#compile the C kernel
+	gcc -fno-pie -Wall -ffreestanding -c src/kernel/kernel.c -o bin/AA_kernel.o -m32
 	$(foreach c_file, $(SRC_FILES), $(call compile_c_file, $(c_file)))
 	#gcc -ffreestanding -c  -o -m32
 	#spit out the object dump for the kernel file (for dubugging)
