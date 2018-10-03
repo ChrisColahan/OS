@@ -13,9 +13,13 @@ void entry() {
 #include "../util.h"
 #include "../math.h"
 #include "../graphics.h"
+#include "../idt.h"
 
 
 void main() {
+    
+    initialize_idt();
+    
     //unsigned char scancode = 0;
     //while(1) {
       //  if(scancode == 0)

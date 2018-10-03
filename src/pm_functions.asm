@@ -5,11 +5,15 @@
 
 [bits 16]
 
+; declare gdt
 %include "src/gdt.asm"
+%include "src/idt.asm"
+
 
 switch_to_pm:
   cli ; switch off interrupts
   lgdt [gdt_descriptor] ;load global descriptor table
+  lidt [idt] ;load interrupt descriptor table
 
   mov eax, cr0 ;make switch to protected mode
   or eax, 0x1
