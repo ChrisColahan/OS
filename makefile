@@ -10,9 +10,8 @@ all: build run
 build: clean assemble_bootloader compile_kernel create_disk_image
 
 clean:
-	-mkdir bin
-	-rm bin/*
-	-rm bin/kernel/*
+	mkdir bin; true
+	rm bin/*; true
 
 assemble_bootloader:
 	nasm src/boot.asm -f bin -o bin/boot.bin
