@@ -17,8 +17,8 @@ Currently, building has only been tested on Linux.
 2. Ensure you have the nessessary requirements (see Requirements section)
 3. cd into the directory and run make: `cd OS && make`
 4. Hopefully, if everything worked correctly, then a qemu window should pop up with the OS running: 
-![alt text](https://github.com/ChrisColahan/OS/blob/master/screenshots/qemu-26-june-2016.png "qemu screenshot")
-5. The generated OS image is in raw binary form as `bin/os_image.bin`. There is currently no pre-defined way in the makefile of writing this image to a CD, flashdrive, or converting it to any other format such as an ISO.
+![alt text](https://github.com/ChrisColahan/OS/blob/master/screenshots/qemu-3-oct-2018.png "qemu screenshot")
+5. The generated OS image is in raw binary form as `bin/os_image.bin`. This is the file that qemu loads.
 
 #### Credits
 I was helped/inspired by the resources found in these links:
